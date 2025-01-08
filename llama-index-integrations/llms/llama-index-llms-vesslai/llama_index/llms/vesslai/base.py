@@ -90,7 +90,7 @@ class VesslAILLM(OpenAILike, BaseModel):
 
         self.organization_name = organization_name
 
-    def serve(
+    async def serve(
         self,
         service_name: str,
         model_name: Optional[str] = None,
@@ -159,7 +159,7 @@ class VesslAILLM(OpenAILike, BaseModel):
                 )
                 return
 
-        self.api_base = self._launch_service_revision_from_yaml(
+        self.api_base = await self._launch_service_revision_from_yaml(
             organization_name=self.organization_name,
             yaml_path=serve_yaml_path,
             service_name=service_name,
@@ -210,7 +210,7 @@ class VesslAILLM(OpenAILike, BaseModel):
         service_config["env"]["MODEL_NAME"] = model_name
         return service_config
 
-    def _launch_service_revision_from_yaml(
+    async def _launch_service_revision_from_yaml(
         self,
         organization_name: str,
         yaml_path: str,
@@ -244,7 +244,7 @@ class VesslAILLM(OpenAILike, BaseModel):
         print(f"Check your Service at: {service_url}")
 
         gateway = read_service(service_name=service_name).gateway_config
-        wait_for_gateway_enabled(
+        await wait_for_gateway_enabled(
             gateway=gateway, service_name=revision.model_service_name
         )
 
